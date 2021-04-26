@@ -2,7 +2,7 @@ name: CI
 on:
   push:
 jobs:
-  build-server:
+  ci:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
