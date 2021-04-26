@@ -9,7 +9,6 @@ import subprocess
 import pytz
 import boto3
 from botocore.client import Config
-from botocore.exceptions import ClientError
 
 from . import config
 
@@ -37,7 +36,9 @@ def upload_snapshot(snapshot_id):
     bucket.upload_file(filename, target_key)
 
 
-def store(siri_snapshot, store_datetime, upload=False):
+def store(siri_snapshot, store_datetime, upload=False, upload_snapshot_callback=None):
+    if not upload_snapshot_callback:
+        upload_snapshot_callback = upload_snapshot
     snapshot_id = store_datetime.strftime('%Y/%m/%d/%H/%M')
     filename = os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, snapshot_id + '.br')
     os.makedirs(os.path.dirname(filename), exist_ok=True)
@@ -48,7 +49,7 @@ def store(siri_snapshot, store_datetime, upload=False):
         assert ret == 0, out
         shutil.move(os.path.join(tmpdir, 'temp.br'), filename)
     if upload:
-        upload_snapshot(snapshot_id)
+        upload_snapshot_callback(snapshot_id)
     return snapshot_id
 
 

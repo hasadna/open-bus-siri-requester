@@ -11,9 +11,14 @@ from . import requester
 from .graceful_killer import GracefulKiller
 
 
-def run_single_iteration(now, last_cleanup_datetime):
-    snapshot_id = storage.store(requester.request(), now, upload=True)
+def run_single_iteration(now, last_cleanup_datetime, store_callback=None, requester_callback=None):
+    if not store_callback:
+        store_callback = storage.store
+    if not requester_callback:
+        requester_callback = requester.request
+    snapshot_id = store_callback(requester_callback(), now, upload=True)
     print("Stored snapshot: {}".format(snapshot_id))
+    os.makedirs(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, exist_ok=True)
     with open(os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, 'daemon_status.json'), 'w') as f:
         json.dump({
             'last_snapshot_id': snapshot_id,

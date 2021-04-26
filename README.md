@@ -66,6 +66,22 @@ Check the CLI help message
 open-bus-siri-requester
 ```
 
+
+## Running Unit Tests
+
+Install test requirements
+
+```
+pip install -r tests/requirements.txt
+```
+
+Run tests
+
+```
+pytest
+```
+
+
 ## Using Docker
 
 Source the env vars created for local development
