@@ -8,4 +8,5 @@ RUN pip install -r requirements.txt
 COPY setup.py ./
 COPY open_bus_siri_requester ./open_bus_siri_requester
 RUN pip install -e .
+ENV PYTHONUNBUFFERED=1
 ENTRYPOINT ["open-bus-siri-requester", "daemon-start"]
