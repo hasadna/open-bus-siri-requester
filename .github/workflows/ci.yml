@@ -11,6 +11,7 @@ jobs:
         DOCKER_NGINX_IMAGE_NAME: "docker.pkg.github.com/hasadna/open-bus-siri-requester/open-bus-siri-requester-nginx"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         HASADNA_K8S_DEPLOY_KEY: ${{ secrets.HASADNA_K8S_DEPLOY_KEY }}
+        SIRI_ETL_DEPLOY_KEY: ${{ secrets.SIRI_ETL_DEPLOY_KEY }}
       run: |
         echo "${GITHUB_TOKEN}" | docker login docker.pkg.github.com -u hasadna --password-stdin &&\
         if docker pull "${DOCKER_APP_IMAGE_NAME}:latest"; then
@@ -46,6 +47,14 @@ jobs:
             git config --global user.name "Open Bus Siri Requester CI" &&\
             git config --global user.email "open-bus-siri-requester-ci@localhost" &&\
             git add ./values.auto-updated.yaml && git commit -m "automatic update of open bus siri requester" &&\
-            git push origin master
+            git push origin master &&\
+            echo "${SIRI_ETL_DEPLOY_KEY}" > siri_etl_deploy_key &&\
+            chmod 400 siri_etl_deploy_key &&\
+            export GIT_SSH_COMMAND="ssh -i `pwd`/siri_etl_deploy_key -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no" &&\
+            git clone git@github.com:hasadna/open-bus-siri-etl.git &&\
+            cd open-bus-siri-etl &&\
+            bin/update_siri_requester_dependencies.py "${GITHUB_SHA}" &&\
+            git commit -m "automatic update of open bus siri requester dependencies" &&\
+            git push origin main
           fi
         fi
