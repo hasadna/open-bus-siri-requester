@@ -5,11 +5,11 @@ import datetime
 
 import pytz
 
-from open_bus_siri_requester import daemon
+from open_bus_siri_requester import daemon, config
 
 
 def test():
-    shutil.rmtree('.data', ignore_errors=True)
+    shutil.rmtree(os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, '2020'), ignore_errors=True)
     mock_calls = []
 
     def mock_store(siri_snapshot, store_datetime, upload=False):
@@ -27,7 +27,7 @@ def test():
         ('request', []),
         ('store', [{'foo': 'bar'}, datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC), True])
     ]
-    with open(os.path.join('.data/siri/daemon_status.json')) as f:
+    with open(os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, 'daemon_status.json')) as f:
         assert json.load(f) == {
             'last_cleanup_datetime_utc': '2020-05-04 03:02:01',
             'last_datetime_utc': '2020-01-02 03:04:05',

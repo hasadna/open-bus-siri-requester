@@ -6,11 +6,10 @@ import subprocess
 
 import pytz
 
-from open_bus_siri_requester import storage
+from open_bus_siri_requester import storage, config
 
 
 def test_store():
-    shutil.rmtree('.data')
     siri_snapshot = {'foo': 'bar'}
     store_datetime = datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
     mock_calls = []
@@ -20,9 +19,9 @@ def test_store():
 
     snapshot_id = storage.store(siri_snapshot, store_datetime, upload=True, upload_snapshot_callback=mock_upload_snapshot)
     assert snapshot_id == '2020/01/02/03/04'
-    filename = '.data/siri/2020/01/02/03/04.br'
+    filename = os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, '2020/01/02/03/04.br')
     assert os.path.exists(filename)
-    ret, out = subprocess.getstatusoutput('cat .data/siri/2020/01/02/03/04.br | brotli -d')
+    ret, out = subprocess.getstatusoutput('cat {} | brotli -d'.format(filename))
     assert ret == 0
     assert json.loads(out) == siri_snapshot
     assert mock_calls == [('upload_snapshot', ['2020/01/02/03/04'])]
@@ -31,8 +30,12 @@ def test_store():
     assert mock_calls == []
 
 
+def rmtree_content(dirname):
+    subprocess.check_call('rm -rf {}/*'.format(dirname), shell=True)
+
+
 def test_list():
-    shutil.rmtree('.data')
+    rmtree_content(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH)
     siri_snapshot = {'foo': 'bar'}
     store_datetime = datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
     expected_snapshot_ids = set()
@@ -54,7 +57,6 @@ def test_list():
 
 
 def test_read():
-    shutil.rmtree('.data')
     siri_snapshot = {'foo': 'bar'}
     store_datetime = datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
     snapshot_id = storage.store(siri_snapshot, store_datetime, upload=False)
@@ -62,7 +64,7 @@ def test_read():
 
 
 def test_cleanup():
-    shutil.rmtree('.data')
+    rmtree_content(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH)
     siri_snapshot = {'foo': 'bar'}
     now = datetime.datetime.now(pytz.UTC)
     expected_after_delete = set()

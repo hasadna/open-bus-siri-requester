@@ -2,9 +2,27 @@
 
 Request and store SIRI real-time snapshots
 
+## Required environment variables
 
-## Local development
+* `OPEN_BUS_MOT_KEY`: a key used to authenticate with MOT (Ministry of Transportation) servers
+* `OPEN_BUS_SSH_TUNNEL_PRIVATE_KEY_FILE`: Private SSH key file used to open a tunnel to proxy server which is authorized to access MOT servers
+* `OPEN_BUS_SSH_TUNNEL_SERVER_IP`: IP of the proxy server which is authorized to access MOT servers
+* `OPEN_BUS_S3_ENDPOINT`: S3 endpoint used to store all snapshots to
+* `OPEN_BUS_S3_ACCESS_KEY_ID`: S3 access key used to store all snapshots to
+* `OPEN_BUS_S3_SECRET_ACCESS_KEY`: S3 secret access key used to store all snapshots to
+* `OPEN_BUS_S3_BUCKET`: S3 bucket used to store all snapshots to
 
+## Development using the Docker Compose environment
+
+This is the easiest option to start development, follow these instructions: https://github.com/hasadna/open-bus-pipelines/blob/main/README.md#siri-requester
+
+For local development, see the additional functionality section: `Develop siri-requester from a local clone`
+
+## Development using local Python interpreter
+
+It's much easier to use the Docker Compose environment, but the following can be
+refferd to for more details regarding the internal processes and for development
+using your local Python interpreter. 
 
 ### Install
 
@@ -67,7 +85,7 @@ open-bus-siri-requester
 ```
 
 
-## Running Unit Tests
+### Running Unit Tests
 
 Install test requirements
 
@@ -82,7 +100,7 @@ pytest
 ```
 
 
-## Using Docker
+### Using Docker
 
 Source the env vars created for local development
 
@@ -109,3 +127,4 @@ docker run --rm -it -p 8080:80 -v `pwd`/.data:/srv open-bus-siri-requester-nginx
 ```
 
 Browse the files at http://localhost:8080
+s
