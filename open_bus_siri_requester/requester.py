@@ -42,4 +42,6 @@ def request():
     assert config.OPEN_BUS_MOT_KEY, 'missing OPEN_BUS_MOT_KEY config'
     request_url = REQUEST_URL_TEMPLATE.format(Key=config.OPEN_BUS_MOT_KEY)
     with start_ssh_tunnel() as proxies:
-        return requests.get(request_url, proxies=proxies).json()
+        return requests.get(
+            request_url, proxies=proxies, timeout=config.OPEN_BUS_REQUESTER_TIMEOUT_SECONDS
+        ).json()
