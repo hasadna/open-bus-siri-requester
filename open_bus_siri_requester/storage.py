@@ -4,6 +4,7 @@ import glob
 import shutil
 import datetime
 import tempfile
+import itertools
 import subprocess
 
 import pytz
@@ -91,3 +92,21 @@ def cleanup():
             path = os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, path_prefix)
             if len(glob.glob(path + '/*')) == 0:
                 os.rmdir(path)
+
+
+def get_seconds_since_last_snapshot():
+    today = datetime.date.today()
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    latest_snapshot_id = None
+    latest_snapshot_datetime = None
+    for snapshot_id in itertools.chain(list(today.strftime('%Y/%m/%d'), limit=9999999),
+                                       list(yesterday.strftime('%Y/%m/%d'), limit=9999999)):
+        try:
+            snapshot_datetime = datetime.datetime.strptime(snapshot_id + 'z+0000', '%Y/%m/%d/%H/%Mz%z')
+            if (latest_snapshot_id is None and latest_snapshot_datetime is None) or latest_snapshot_datetime < snapshot_datetime:
+                read(snapshot_id)
+                latest_snapshot_id = snapshot_id
+                latest_snapshot_datetime = snapshot_datetime
+        except:
+            pass
+    return (datetime.datetime.now(pytz.UTC) - latest_snapshot_datetime).total_seconds()
