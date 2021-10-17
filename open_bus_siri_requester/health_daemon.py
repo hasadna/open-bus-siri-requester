@@ -21,7 +21,7 @@ class HealthDaemonHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         seconds_since_last_snapshot = storage.get_seconds_since_last_snapshot()
         msg = '{} seconds since last snapshot'.format(seconds_since_last_snapshot)
-        if seconds_since_last_snapshot > 120:
+        if seconds_since_last_snapshot > config.HEALTH_DAEMON_MAX_SECONDS_SINCE_LAST_SNAPSHOT:
             self._send_error(error='ERROR: ' + msg)
         else:
             self._send_ok(msg='OK: ' + msg)
