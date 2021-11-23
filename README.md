@@ -2,6 +2,8 @@
 
 Request and store SIRI real-time snapshots
 
+See [our contributing docs](https://github.com/hasadna/open-bus-pipelines/blob/main/CONTRIBUTING.md) if you want to suggest changes to this repository.
+
 ## Required environment variables
 
 * `OPEN_BUS_MOT_KEY`: a key used to authenticate with MOT (Ministry of Transportation) servers
