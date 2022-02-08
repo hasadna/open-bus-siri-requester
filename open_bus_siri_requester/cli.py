@@ -46,11 +46,6 @@ def storage_read(snapshot_id):
 
 
 @main.command()
-def storage_cleanup():
-    storage.cleanup()
-
-
-@main.command()
 def daemon_start():
     """Starts the daemon which periodically requests and stores snapshots"""
     daemon.start()

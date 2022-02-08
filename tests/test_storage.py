@@ -61,20 +61,3 @@ def test_read():
     store_datetime = datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
     snapshot_id = storage.store(siri_snapshot, store_datetime, upload=False)
     assert storage.read(snapshot_id) == siri_snapshot
-
-
-def test_cleanup():
-    rmtree_content(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH)
-    siri_snapshot = {'foo': 'bar'}
-    now = datetime.datetime.now(pytz.UTC)
-    expected_after_delete = set()
-    expected_after_delete.add(storage.store(siri_snapshot, now, upload=False))
-    expected_after_delete.add(storage.store(siri_snapshot, now - datetime.timedelta(days=6), upload=False))
-    storage.store(siri_snapshot, now - datetime.timedelta(days=7), upload=False)
-    storage.store(siri_snapshot, now - datetime.timedelta(days=8), upload=False)
-    storage.store(siri_snapshot, now - datetime.timedelta(days=29), upload=False)
-    storage.store(siri_snapshot, now - datetime.timedelta(days=30), upload=False)
-    assert len(set(storage.list())) == 6
-    storage.cleanup()
-    assert set(set(storage.list())) == expected_after_delete
-

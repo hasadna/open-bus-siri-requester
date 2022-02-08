@@ -21,15 +21,13 @@ def test():
         return {'foo': 'bar'}
 
     now = datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC)
-    last_cleanup_datetime = datetime.datetime(2020, 5, 4, 3, 2, 1, tzinfo=pytz.UTC)
-    daemon.run_single_iteration(now, last_cleanup_datetime, mock_store, mock_request)
+    daemon.run_single_iteration(now, mock_store, mock_request)
     assert mock_calls == [
         ('request', []),
         ('store', [{'foo': 'bar'}, datetime.datetime(2020, 1, 2, 3, 4, 5, tzinfo=pytz.UTC), True])
     ]
     with open(os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, 'daemon_status.json')) as f:
         assert json.load(f) == {
-            'last_cleanup_datetime_utc': '2020-05-04 03:02:01',
             'last_datetime_utc': '2020-01-02 03:04:05',
             'last_snapshot_id': 'mock-snapshot-id'
         }
