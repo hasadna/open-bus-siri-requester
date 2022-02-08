@@ -16,7 +16,7 @@ from . import config
 
 def get_s3_resource(retry_max_attempts=10, connect_timeout=15, read_timeout=60):
     return boto3.resource(
-        's3', endpoint_url=config.OPEN_BUS_S3_ENDPOINT_URL,
+        's3', endpoint_url=config.OPEN_BUS_S3_ENDPOINT_URL if config.OPEN_BUS_S3_ENDPOINT_URL else None,
         aws_access_key_id=config.OPEN_BUS_S3_ACCESS_KEY_ID,
         aws_secret_access_key=config.OPEN_BUS_S3_SECRET_ACCESS_KEY,
         # region_name='us-east-1',
