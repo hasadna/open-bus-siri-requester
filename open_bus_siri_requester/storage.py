@@ -75,25 +75,6 @@ def read(snapshot_id):
     return json.loads(out)
 
 
-def cleanup():
-    now = datetime.datetime.now(pytz.UTC)
-    last_week = now - datetime.timedelta(days=7)
-    for d in range(30):
-        path_prefix = (last_week - datetime.timedelta(days=d)).strftime('%Y/%m/%d')
-        path = os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, path_prefix)
-        if os.path.exists(path):
-            print("Removing path: {}".format(path))
-            shutil.rmtree(path)
-            path_prefix = (last_week - datetime.timedelta(days=d)).strftime('%Y/%m')
-            path = os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, path_prefix)
-            if len(glob.glob(path + '/*')) == 0:
-                os.rmdir(path)
-            path_prefix = (last_week - datetime.timedelta(days=d)).strftime('%Y')
-            path = os.path.join(config.OPEN_BUS_SIRI_STORAGE_ROOTPATH, path_prefix)
-            if len(glob.glob(path + '/*')) == 0:
-                os.rmdir(path)
-
-
 def get_seconds_since_last_snapshot():
     today = datetime.date.today()
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
