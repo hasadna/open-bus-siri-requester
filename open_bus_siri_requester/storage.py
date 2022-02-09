@@ -6,6 +6,8 @@ import datetime
 import tempfile
 import itertools
 import subprocess
+import traceback
+from collections import defaultdict
 
 import pytz
 import boto3
@@ -73,6 +75,39 @@ def read(snapshot_id):
     ret, out = subprocess.getstatusoutput('cat {} | brotli -d'.format(filename))
     assert ret == 0, out
     return json.loads(out)
+
+
+def read_stats(snapshot_id=None, snapshot_data=None):
+    if snapshot_id:
+        assert not snapshot_data
+    else:
+        assert snapshot_data
+    stats = {
+        'failed_to_read': False,
+        'records_valid': 0,
+        'records_failed_to_parse': 0,
+        'records_dates': defaultdict(int),
+        'response_timestamp': None
+    }
+    try:
+        if snapshot_id:
+            snapshot_data = read(snapshot_id)
+        stats['response_timestamp'] = datetime.datetime.strptime(snapshot_data['Siri']['ServiceDelivery']['ResponseTimestamp'], '%Y-%m-%dT%H:%M:%S%z')
+        for stop_monitoring_delivery in snapshot_data['Siri']['ServiceDelivery']['StopMonitoringDelivery']:
+            for monitored_stop_visit in stop_monitoring_delivery['MonitoredStopVisit']:
+                try:
+                    recorded_at_time = datetime.datetime.strptime(monitored_stop_visit['RecordedAtTime'], '%Y-%m-%dT%H:%M:%S%z')
+                except:
+                    recorded_at_time = None
+                if recorded_at_time is None:
+                    stats['records_failed_to_parse'] += 1
+                else:
+                    stats['records_valid'] += 1
+                    stats['records_dates'][recorded_at_time.strftime('%Y-%m-%d %H')] += 1
+    except:
+        traceback.print_exc()
+        stats['failed_to_read'] = True
+    return stats
 
 
 def get_seconds_since_last_snapshot():
