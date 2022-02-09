@@ -6,13 +6,7 @@ See [our contributing docs](https://github.com/hasadna/open-bus-pipelines/blob/m
 
 ## Required environment variables
 
-* `OPEN_BUS_MOT_KEY`: a key used to authenticate with MOT (Ministry of Transportation) servers
-* `OPEN_BUS_SSH_TUNNEL_PRIVATE_KEY_FILE`: Private SSH key file used to open a tunnel to proxy server which is authorized to access MOT servers
-* `OPEN_BUS_SSH_TUNNEL_SERVER_IP`: IP of the proxy server which is authorized to access MOT servers
-* `OPEN_BUS_S3_ENDPOINT`: S3 endpoint used to store all snapshots to
-* `OPEN_BUS_S3_ACCESS_KEY_ID`: S3 access key used to store all snapshots to
-* `OPEN_BUS_S3_SECRET_ACCESS_KEY`: S3 secret access key used to store all snapshots to
-* `OPEN_BUS_S3_BUCKET`: S3 bucket used to store all snapshots to
+See [open_bus_siri_requester/config.py](open_bus_siri_requester/config.py)
 
 ## Development using the Docker Compose environment
 
@@ -55,16 +49,13 @@ venv/bin/python -m pip install -e .
 
 ### Configure
 
-Create the following `.env` file or get it from a friend:
+Create a `.env` file based on the env vars in [open_bus_siri_requester/config.py](open_bus_siri_requester/config.py)
+or get the file from a friend:
 
 ```
 export OPEN_BUS_MOT_KEY=
 export OPEN_BUS_SSH_TUNNEL_PRIVATE_KEY_FILE=
-export OPEN_BUS_SSH_TUNNEL_SERVER_IP=
-export OPEN_BUS_S3_ENDPOINT=
-export OPEN_BUS_S3_ACCESS_KEY_ID=
-export OPEN_BUS_S3_SECRET_ACCESS_KEY=
-export OPEN_BUS_S3_BUCKET=
+...
 ```
 
 * `OPEN_BUS_SSH_TUNNEL_PRIVATE_KEY_FILE` should point to the local path to the private key file for ssh tunnelling

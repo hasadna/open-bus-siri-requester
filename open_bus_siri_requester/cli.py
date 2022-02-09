@@ -46,6 +46,22 @@ def storage_read(snapshot_id):
 
 
 @main.command()
+@click.argument('SNAPSHOT_ID')
+def storage_read_stats(snapshot_id):
+    """reads, parses and output stats for a single snapshot"""
+    stats = storage.read_stats(snapshot_id)
+    if stats.pop('failed_to_read'):
+        print('Failed to read the snapshot')
+        exit(1)
+    else:
+        dates = stats.pop('records_dates')
+        for k in sorted(dates.keys()):
+            print(f'{k}: {dates[k]}')
+        for k, v in stats.items():
+            print(f'{k}: {v}')
+
+
+@main.command()
 def daemon_start():
     """Starts the daemon which periodically requests and stores snapshots"""
     daemon.start()
