@@ -1,0 +1,3 @@
+- name: siri-requester-daemon
+  desc: |
+    A daemon which runs continuously and approximately every 60 seconds downloads the latest SIRI snapshot from MOT.
