@@ -13,8 +13,8 @@ import pytz
 from . import config, storage
 
 
-REQUEST_URL_TEMPLATE = "http://moran.mot.gov.il:110/Channels/HTTPChannel/SmQuery/2.8/json?Key={Key}&MonitoringRef=AllActiveTripsFilter&StopVisitDetailLevel=normal"
-ALT_REQUEST_URL_TEMPLATE = REQUEST_URL_TEMPLATE.replace(':110/', ':1110/')
+REQUEST_URL_TEMPLATE = "http://moran.mot.gov.il:1110/Channels/HTTPChannel/SmQuery/2.8/json?Key={Key}&MonitoringRef=AllActiveTripsFilter&StopVisitDetailLevel=normal"
+ALT_REQUEST_URL_TEMPLATE = REQUEST_URL_TEMPLATE.replace(':1110/', ':110/')
 
 
 @contextlib.contextmanager
