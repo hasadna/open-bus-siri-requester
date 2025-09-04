@@ -14,7 +14,7 @@ from . import config, storage
 
 
 REQUEST_URL_TEMPLATE = "https://moran.mot.gov.il/Channels/HTTPChannel/SmQuery/2.8/json?Key={Key}&MonitoringRef=AllActiveTripsFilter&StopVisitDetailLevel=normal"
-ALT_REQUEST_URL_TEMPLATE = REQUEST_URL_TEMPLATE  # need to get the new backup url
+ALT_REQUEST_URL_TEMPLATE = "https://moran-t.mot.gov.il/Channels/HTTPChannel/SmQuery/2.8/json?Key={Key}&MonitoringRef=AllActiveTripsFilter&StopVisitDetailLevel=normal"
 
 
 @contextlib.contextmanager
@@ -73,7 +73,8 @@ def _request(use_alt=False):
     with start_ssh_tunnel() as proxies:
         try:
             res = requests.get(
-                request_url, proxies=proxies, timeout=config.OPEN_BUS_REQUESTER_TIMEOUT_SECONDS
+                request_url, proxies=proxies, timeout=config.OPEN_BUS_REQUESTER_TIMEOUT_SECONDS,
+                verify=False
             )
         except:
             traceback.print_exc()
